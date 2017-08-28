@@ -27,33 +27,44 @@ def obs_wav(z,lam_rest):
 	lam_e = lam_rest*(1.+z)
 	return lam_e
 
-#0943 detected lines
-wavs = [ 1215.7,1238.8,1242.8,1338.0,1402.8,1486.5,1548.2,1550.8,1640.4,1660.8,1666.1,1906.7,1908.7,2326.0 ]
+# -----------------------------------
+#   Estimated Observed Wavelengths
+# -----------------------------------
 
-wav_obs = [ obs_wav(2.923,wavs[i]) for i in range(len(wavs)) ]
-ID = [ 'Lya', 'NV', 'NV', 'CII','SiIV', 'NIV]', 'CIV', 'CIV', 'HeII', 'OIII]', 'OIII]', 'CIII]', 'CIII]', 'CII]' ]
+#rest wavelengths
+wav_rest = \
+[ ('Lya', 1215.7), ('NV',1238.8),('NV',1242.8),\
+('CII',1338.0),('SiIV',1402.8),('NIV]',1486.5),\
+('CIV',1548.2),('CIV',1550.8),('HeII',1640.4),\
+('OIII]',1660.8),('OIII]',1666.1),('CIII]',1906.7),\
+('CIII]',1908.7),('CII]',2326.0) ]
 
-wavs_data = np.array( zip(wavs,wav_obs), dtype=[('ID', np.float64), ('lam_e', np.float64)] )
+N = len(wav_rest)
 
-np.savetxt('./out/0943_spectrum.txt',wavs_data, fmt=['%.2f']+['%.2f'], header='Assuming Unshifted Line Centre from Vsys\nwav_e: rest-frame wavelength\nwav_o: redshifted wavelength\n\nwav_e   wav_o')
+#redshifted wavelengths
+line 		= [ wav_rest[i][0] for i in range(N) ]
+wav_em 		= [ wav_rest[i][1] for i in range(N) ]
+wav_obs 	= [ obs_wav(2.923,wav_rest[i][1]) for i in range(N) ]
 
-##load data cubes
-##spectral-cube load more durable than mpdaf load
+wavs_data = np.array( zip(line,wav_em,wav_obs), dtype=[('line', '|S20'), ('wav_em',np.float64), ('wav_obs', np.float64)] )
+
+np.savetxt('./out/0943_spectrum.txt', wavs_data, fmt=['%-10s']+['%.2f']+['%.2f'], header='Assuming Unshifted Line Centre from Vsys\nwav_e: rest-frame wavelength\nwav_o: redshifted wavelength\n\nline     wav_e   wav_o')
+
+# -------------------------
+#   Estimated Wavelengths
+# -------------------------
+
+#load cube and extract region of interest
 cube_ = sc.SpectralCube.read("/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrom_corr.fits",hdu=1,format='fits')
-# print cube
-
-#extract sky-region of interest
 spec_cube 	= cube_[:,185:285,120:220]		
 spec_cube.write("/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits", overwrite=True)
-
-##mpdaf load subcube to use MUSE specific functions
 cube = mpdo.Cube("/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits")
 # cube.info()
 
 fig = pl.figure(figsize=(18,8))
-muse_0943_spec = cube.subcube_circle_aperture(center=(50,45),radius=10,unit_center=None,unit_radius=None)
+muse_0943_spec = cube.subcube_circle_aperture(center=(52,46),radius=12,unit_center=None,unit_radius=None)
 muse_spec = muse_0943_spec.sum(axis=(1,2))
-muse_spec.plot(color='purple')
+muse_spec.plot(color='purple',lw=12)
 
 # fig = pl.figure()
 # fig.add_subplot(111)
@@ -68,8 +79,8 @@ flux = data.get_ydata()
 ymax = max(flux) + 5.e3
 y_label = max(flux) + 1.e3
 
-# label spectrum with known features
-#assuming centre of line is at rest w.r.t. systemic velocity i.e. HeII
+# line labels
+# assumed line-centre aligned with systemic velocity
 pl.plot( [wav_obs[0],wav_obs[0]],[-250.,ymax], color='red', ls='--',lw=0.3)
 pl.text(4720.2,y_label,r'Ly$\alpha$',fontsize=10,rotation='90',va='bottom',color='red')
 
