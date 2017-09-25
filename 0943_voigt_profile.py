@@ -198,10 +198,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 		pars 	= mod.make_params( amp=5.e5, g_cen=4769, wid=15., lam0_1=4752., b1=84.e5, N1=5.e13, lam0_2=4768., b2=64.e5, N2=1.3e15, lam0_3=4777., b3=140.e5, N3=3.7e13, lam0_4=4784., b4=33.e5,N4=1.7e13)
 
-		# pars 	= mod.make_params( lam0_1=4749., b1=84.e5, N1=5.e13, lam0_2=4764., b2=64.e5, N2=1.e19, lam0_3=4774., b3=140.e5, N3=3.7e13 )
-
-		# # # # pars 	= mod.make_params(amp=5.e5, g_cen=4769, wid=15., v_cen1=4749., lam0_1=4749., b1=88.e3, N1=1.e9, lam0_2=4764., b2=58.e3, N2=1.e15, lam0_3=4774., b3=109.e3, N3=1.e10, lam0_4=4780., b4=23.e3, N4=1.e9 )
-
 		res 	= mod.fit(flux_ax,pars,x=wav)
 
 		comps 	= res.eval_components(x=wav)
