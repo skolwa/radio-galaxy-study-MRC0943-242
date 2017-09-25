@@ -147,7 +147,7 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	gs_img = ndimage.gaussian_filter(line_em_arr, sigma=(1, 1), order=0)
 	figure = ax1.imshow(gs_img,cmap='gray_r',origin='lower',interpolation='nearest',	transform=ax1.get_transform(wcs),vmin=vmin,vmax=vmax)
 	cb = pl.colorbar(figure, orientation = 'vertical')
-	cb.set_label(r'10$^{-20}$ erg/s/cm$^{2}$',rotation=90)
+	cb.set_label(r'10$^{-20}$ erg/s/cm$^{2}$/pix',rotation=90)
 	pl.title(spec_feat+r' M$_0$ map ('+`int(lam1)`+'-'+`int(lam2)`+r'$\AA$)')
 
 	if spec_feat != 'Lya':

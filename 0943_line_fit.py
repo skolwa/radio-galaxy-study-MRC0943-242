@@ -36,7 +36,7 @@ fname 			= "./out/HeII.fits"
 cube 			= sc.SpectralCube.read(fname,hdu=1,formt='fits')
 cube.write(fname, overwrite=True)
 cube 			= mpdo.Cube(fname)
-HeII 			= cube.subcube_circle_aperture(center=(52,46),radius=14,\
+HeII 			= cube.subcube_circle_aperture(center=(52,45),radius=14,\
 	unit_center	=None,unit_radius=None)
 spec_HeII 		= HeII.sum(axis=(1,2))
 spec_HeII.plot( color='black' )
@@ -79,11 +79,11 @@ wav_e_HeII 		= 1640.4
 #--------------------------
 # LOAD spectral data cubes
 #--------------------------
-if spec_feat != 'HeII':
-	fname 				= "./out/"+spec_feat+".fits"
-	cube 				= sc.SpectralCube.read(fname,hdu=1,formt='fits')
-	cube.write(fname, overwrite=True)
-	cube 				= mpdo.Cube(fname)
+
+fname 				= "./out/"+spec_feat+".fits"
+cube 				= sc.SpectralCube.read(fname,hdu=1,formt='fits')
+cube.write(fname, overwrite=True)
+cube 				= mpdo.Cube(fname)
 
 # -----------------------------------------------
 # 		EXTRACT SPECTRUM for LINE FIT
@@ -91,27 +91,27 @@ if spec_feat != 'HeII':
 # we leave out CIV and Lya because they have absorption that requires Voigt-fitting
 # this will be extended to pixel table spectral extraction
 if spec_feat == 'NIV]':
-	glx 	= cube.subcube_circle_aperture(center=(52,46),radius=2,\
+	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=2,\
 		unit_center=None	,unit_radius=None)
 
-elsif spec_feat in ('SiIV','CII'):
-	glx 	= cube.subcube_circle_aperture(center=(52,46),radius=3,\
+elif spec_feat in ('SiIV','CII'):
+	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=3,\
 		unit_center=None	,unit_radius=None)
 
 elif spec_feat == 'HeII':
-	glx		= cube.subcube_circle_aperture(center=(52,46),radius=16,\
+	glx		= cube.subcube_circle_aperture(center=(52,45),radius=16,\
 		unit_center	=None,unit_radius=None)
 
 elif spec_feat == 'CII]':
-	glx 	= cube.subcube_circle_aperture(center=(52,46),radius=7,\
+	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=7,\
 		unit_center=None,unit_radius=None)
 
 elif spec_feat == 'CIII]':
-	glx 	= cube.subcube_circle_aperture(center=(52,46),radius=11,\
+	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=11,\
 		unit_center=None,unit_radius=None)
 
 elif spec_feat in ('NV','OIII]'):
-	glx 	= cube.subcube_circle_aperture(center=(52,46),radius=6,\
+	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=6,\
 		unit_center=None,unit_radius=None)
 
 pl.figure()
@@ -158,8 +158,8 @@ elif spec_feat == 'HeII':
 	pars.update(gauss.make_params())
 	
 	pars['gauss_center'].set(6420.)
-	pars['gauss_sigma'].set(15.)
-	
+	pars['gauss_sigma'].set(20.)
+
 	mod 	= lorenz + gauss
 	out 	= mod.fit(flux_ax,pars,x=wav_ax)
 	report 	= out.fit_report(min_correl=0.1)
@@ -168,8 +168,10 @@ elif spec_feat == 'HeII':
 		
 	comps 	= out.eval_components(x=wav)
 
-	pl.plot(wav,comps['lorenz_'],'b--')
-	pl.plot(wav,comps['gauss_'],'b--')
+	print report
+
+	# pl.plot(wav,comps['lorenz_'],'b--')
+	# pl.plot(wav,comps['gauss_'],'b--')
 
 	pl.plot(wav_ax,out.best_fit,'r--')
 
@@ -268,7 +270,8 @@ elif spec_feat 	== 'NV':
 	wav_e1 = 1238.8
 	wav_e2 = 1242.8
 	header = np.array( \
-		["# spec_feat    wav0        err_wav0       flux_peak        err_flux_peak        FWHM    	err_FWHM       wav_rest"] )
+		["# spec_feat    wav0        err_wav0       flux_peak        err_flux_peak\
+		        FWHM    	err_FWHM       wav_rest"] )
 	gauss_fit_params1 = np.array([spec_feat, line[0].lpeak, line[0].err_lpeak,\
 		line[0].peak, line[0].err_peak, line[0].fwhm,\
 		line[0].err_fwhm, wav_e1])
@@ -340,7 +343,7 @@ if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
 
 #doublet state
 else:
-	vel_meas = [vel(line[0].lpeak,wav_e1,z),vel(line[1].lpeak,wav_e2,z)]	#central velocity of first detected line
+	vel_meas = [vel(line[0].lpeak,wav_e1,z),vel(line[1].lpeak,wav_e2,z)]	#central velocity of line1
 	vel_off = [vel_meas[0] - vel0, vel_meas[1] - vel0 ]
 	xticks = tk.FuncFormatter( lambda x,pos: '%.0f'%( vel(x,wav_e2,z) - vel0)	) 
 	# print vel_meas
@@ -365,6 +368,8 @@ def flux(wav,flux_Jy):
 if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
 	wav_cent = wav_o 
 	maxf = flux_Jy(wav_cent,max(flux_ax))*1.e6   #max flux in microJy
+	print maxf
+
 else:
 	wav_cent = line[1].lpeak
 	maxf = flux_Jy(wav_cent,max(flux_ax))*1.e6   #max flux in microJy	
@@ -378,18 +383,24 @@ if maxf > 4. and maxf < 5.:
 	flux5 = flux(wav_cent,5.e-6)
 	major_yticks = [ flux0, flux1, flux2, flux3, flux4, flux5 ]
 
-elif maxf > 1. and maxf < 2.:
+elif maxf < 1.:
+	flux0 = flux(wav_cent,0.)
+	flux1 = flux(wav_cent,0.5e-6)
+	major_yticks = [ flux0, flux1 ]
+
+elif maxf > 1. and maxf < 3.:
 	flux0 = flux(wav_cent,0.)
 	flux1 = flux(wav_cent,1.e-6)
 	flux2 = flux(wav_cent,2.e-6)
-	major_yticks = [ flux0, flux1, flux2 ]
+	flux3 = flux(wav_cent,2.e-6)
+	major_yticks = [ flux0, flux1, flux2, flux3 ]
 
 elif maxf > 20. and maxf < 30.:
 	flux0 = flux(wav_cent,0.)
 	flux1 = flux(wav_cent,10.e-6)
 	flux2 = flux(wav_cent,20.e-6)
 	flux3 = flux(wav_cent,30.e-6)
-	major_yticks = [ flux0, flux1, flux2, flux3, ]
+	major_yticks = [ flux0, flux1, flux2, flux3 ]
 
 elif maxf > 4. and maxf < 5.:
 	flux0 = flux(wav_cent,0.)
@@ -422,6 +433,11 @@ ax.set_yticks(major_yticks)
 if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
 	yticks = tk.FuncFormatter( lambda x,pos: '%.0f'%( flux_Jy(wav_cent,x)*1.e6 ) 	)
 	ax.yaxis.set_major_formatter(yticks)
+
+elif maxf < 1.:
+	yticks = tk.FuncFormatter( lambda x,pos: '%.1f'%( flux_Jy(wav_cent,x)*1.e6 ) 	)
+	ax.yaxis.set_major_formatter(yticks)
+
 else:
 	yticks = tk.FuncFormatter( lambda x,pos: '%.0f'%( flux_Jy(wav_cent,x)*1.e6	 ) )
 	ax.yaxis.set_major_formatter(yticks)
@@ -454,6 +470,7 @@ ax.set_xticks(major_ticks)
 if spec_feat in ('CII','NV','HeII','SiIV','NIV]','OIII]','CIII]'):
 	xmin = wavlim2[0] - 2.
 	xmax = wavlim2[1] + 2.
+
 elif spec_feat in ('CII]'):
 	xmin = wavlim15[0] - 2.
 	xmax = wavlim15[1] + 2.
@@ -461,20 +478,24 @@ elif spec_feat in ('CII]'):
 #define y-limits
 if spec_feat == 'CII':
 	ymax = 1.4*max(flux_ax)
-	ymin = -10.
+	ymin = -0.1*max(flux_ax)
+
 elif spec_feat == 'CII]' or spec_feat == 'NIV]' or spec_feat == 'SiIV':
 	ymax = 1.3*max(flux_ax)
-	ymin = -10.
+	ymin = -0.1*max(flux_ax)
+
 elif spec_feat in ('NV','OIII]'):
 	ymax = 1.2*max(flux_ax)
-	ymin = -10.
+	ymin = -0.1*max(flux_ax)
+
 elif spec_feat == 'HeII' or spec_feat == 'CIII]':
 	ymax = 1.2*max(flux_ax)
-	ymin = -50.
+	ymin = -0.1*max(flux_ax)
 
 #draw line representing central velocity of spectral feature
 if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
 	pl.plot([wav_o,wav_o],[ymin,ymax],color='green',ls='--')
+
 else:
 	pl.plot([line[0].lpeak,line[0].lpeak],[ymin,ymax],color='green',ls='--')
 	pl.plot([line[1].lpeak,line[1].lpeak],[ymin,ymax],color='green',ls='--')

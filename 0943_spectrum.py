@@ -33,10 +33,12 @@ def obs_wav(z,lam_rest):
 
 #rest wavelengths
 wav_rest = \
-[ ('Lya', 1215.7), ('NV',1238.8),('NV',1242.8),\
-('CII',1338.0),('SiIV',1402.8),('NIV]',1486.5),\
-('CIV',1548.2),('CIV',1550.8),('HeII',1640.4),\
-('OIII]',1660.8),('OIII]',1666.1),('CIII]',1906.7),\
+[ ('Lya', 1215.7), ('NV',1238.8),\
+('NV',1242.8),('CII',1338.0),\
+('SiIV',1402.8),('NIV]',1486.5),\
+('CIV',1548.2),('CIV',1550.8),\
+('HeII',1640.4),('OIII]',1660.8),\
+('OIII]',1666.1),('CIII]',1906.7),\
 ('CIII]',1908.7),('CII]',2326.0) ]
 
 N = len(wav_rest)
@@ -46,9 +48,11 @@ line 		= [ wav_rest[i][0] for i in range(N) ]
 wav_em 		= [ wav_rest[i][1] for i in range(N) ]
 wav_obs 	= [ obs_wav(2.923,wav_rest[i][1]) for i in range(N) ]
 
-wavs_data = np.array( zip(line,wav_em,wav_obs), dtype=[('line', '|S20'), ('wav_em',np.float64), ('wav_obs', np.float64)] )
+wavs_data = np.array( zip(line,wav_em,wav_obs), \
+	dtype=[('line', '|S20'), ('wav_em',np.float64), ('wav_obs', np.float64)] )
 
-np.savetxt('./out/0943_spectrum.txt', wavs_data, fmt=['%-10s']+['%.2f']+['%.2f'], header='Assuming Unshifted Line Centre from Vsys\nwav_e: rest-frame wavelength\nwav_o: redshifted wavelength\n\nline     wav_e   wav_o')
+np.savetxt('./out/0943_spectrum.txt', wavs_data, fmt=['%-10s']+['%.2f']+['%.2f'], \
+	header='Assuming Unshifted Line Centre from Vsys\nwav_e: rest-frame wavelength\nwav_o: redshifted wavelength\n\nline     wav_e   wav_o')
 
 # -------------------------
 #   Estimated Wavelengths
