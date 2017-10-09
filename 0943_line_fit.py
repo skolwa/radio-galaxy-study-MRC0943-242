@@ -2,7 +2,6 @@
 #0943_line_fit.py
 # Purpose:  
 # - Non-resonant line profile fit i.e. Gaussian and Lorentzian only
-# - Flux in Jy 
 # - Wavelength axis in velocity offset w.r.t. HeII (systemic velocity)
 
 import matplotlib.pyplot as pl
@@ -10,13 +9,12 @@ import numpy as np
 
 import spectral_cube as sc
 import mpdaf.obj as mpdo
-
-import warnings
-from astropy.utils.exceptions import AstropyWarning
-
 import astropy.units as u
 import matplotlib.ticker as tk
 import lmfit.models as lm
+
+import warnings
+from astropy.utils.exceptions import AstropyWarning
 
 import sys
 
@@ -33,18 +31,15 @@ print spec_feat
 # 	 	FIT to HeII for systemic velocity
 # -----------------------------------------------
 fname 			= "./out/HeII.fits"
-cube 			= sc.SpectralCube.read(fname,hdu=1,formt='fits')
-cube.write(fname, overwrite=True)
+# cube 			= sc.SpectralCube.read(fname,hdu=1,formt='fits')
+# cube.write(fname, overwrite=True)
 cube 			= mpdo.Cube(fname)
 HeII 			= cube.subcube_circle_aperture(center=(52,45),radius=14,\
 	unit_center	=None,unit_radius=None)
 spec_HeII 		= HeII.sum(axis=(1,2))
-spec_HeII.plot( color='black' )
 
-ax 		= pl.gca()				
-data 	= ax.lines[0]
-wav 	= data.get_xdata()			
-flux    = data.get_ydata()	
+wav 	=  spec_HeII.wave.coord()  		#Ang
+flux 	=  spec_HeII.data				#1.e-20 erg / s / cm^2 / Ang
 
 lorenz 		= lm.LorentzianModel(prefix='lorenz_')
 pars 		= lorenz.make_params()
@@ -81,8 +76,8 @@ wav_e_HeII 		= 1640.4
 #--------------------------
 
 fname 				= "./out/"+spec_feat+".fits"
-cube 				= sc.SpectralCube.read(fname,hdu=1,formt='fits')
-cube.write(fname, overwrite=True)
+# cube 				= sc.SpectralCube.read(fname,hdu=1,formt='fits')
+# cube.write(fname, overwrite=True)
 cube 				= mpdo.Cube(fname)
 
 # -----------------------------------------------
@@ -92,11 +87,11 @@ cube 				= mpdo.Cube(fname)
 # this will be extended to pixel table spectral extraction
 if spec_feat == 'NIV]':
 	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=2,\
-		unit_center=None	,unit_radius=None)
+		unit_center=None,unit_radius=None)
 
 elif spec_feat in ('SiIV','CII'):
 	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=3,\
-		unit_center=None	,unit_radius=None)
+		unit_center=None,unit_radius=None)
 
 elif spec_feat == 'HeII':
 	glx		= cube.subcube_circle_aperture(center=(52,45),radius=16,\
@@ -114,25 +109,26 @@ elif spec_feat in ('NV','OIII]'):
 	glx 	= cube.subcube_circle_aperture(center=(52,45),radius=6,\
 		unit_center=None,unit_radius=None)
 
-pl.figure()
+fig = pl.figure()
 img 			= glx.sum(axis=0)
-ax 				= img.plot( scale='arcsinh' )
-pl.colorbar(ax,orientation = 'vertical')
+continuum 		= img.plot( scale='arcsinh' )
+pl.colorbar(continuum,orientation = 'vertical')
 pl.savefig('./out/line-fitting/'+spec_feat+'_img.png')
 
-pl.figure()
-spec 			= glx.sum(axis=(1,2))
+fig 		= pl.figure()
+spec 		= glx.sum(axis=(1,2))
+
+wav_ax 		=  spec.wave.coord()  		#1.e-8 cm
+flux_ax 	=  spec.data				#1.e-20 erg / s / cm^2 / Ang
+
+fig,ax = pl.subplots()
+pl.plot(wav_ax,flux_ax,c='k',drawstyle='steps-mid')
+pl.xlim([lam1,lam2])
 
 # -----------------------------------
 # 	  MODEL FIT to EMISSION LINE
 # -----------------------------------
 #SINGLET states
-spec.plot( color='black' )
-
-ax 			= pl.gca()				
-data 		= ax.lines[0]
-wav_ax 		= data.get_xdata()			
-flux_ax    	= data.get_ydata()	
 
 #Gaussian
 if spec_feat in ('CII', 'NIV]','SiIV'): 
@@ -168,7 +164,7 @@ elif spec_feat == 'HeII':
 		
 	comps 	= out.eval_components(x=wav)
 
-	print report
+	# print report
 
 	# pl.plot(wav,comps['lorenz_'],'b--')
 	# pl.plot(wav,comps['gauss_'],'b--')
@@ -214,7 +210,7 @@ pl.fill_between(wav_ax,flux_ax,color='grey',interpolate=True,step='mid')
 # pl.savefig('./out/line-fitting/'+spec_feat+' original Fit.eps')
 
 # -----------------------------------------------
-# 	   MPDAF GAUSSIAN FIT PARAMETERS
+# 	      MPDAF GAUSSIAN FIT PARAMETERS
 # -----------------------------------------------
 # line.flux 	=> integrated flux
 # line.fwhm 	=> FHWM
@@ -368,7 +364,7 @@ def flux(wav,flux_Jy):
 if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
 	wav_cent = wav_o 
 	maxf = flux_Jy(wav_cent,max(flux_ax))*1.e6   #max flux in microJy
-	print maxf
+	# print maxf
 
 else:
 	wav_cent = line[1].lpeak
@@ -424,17 +420,13 @@ elif maxf > 30.:
 	flux1 = flux(wav_cent,10.e-6)
 	flux2 = flux(wav_cent,20.e-6)
 	flux3 = flux(wav_cent,30.e-6)
-	flux4 = flux(wav_cent,30.e-6)	
+	flux4 = flux(wav_cent,40.e-6)	
 	major_yticks = [ flux0, flux1, flux2, flux3, flux4 ]
 
 ax.set_yticks(major_yticks)
 
 #define y-axis as flux in Jy
-if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
-	yticks = tk.FuncFormatter( lambda x,pos: '%.0f'%( flux_Jy(wav_cent,x)*1.e6 ) 	)
-	ax.yaxis.set_major_formatter(yticks)
-
-elif maxf < 1.:
+if maxf < 1.:
 	yticks = tk.FuncFormatter( lambda x,pos: '%.1f'%( flux_Jy(wav_cent,x)*1.e6 ) 	)
 	ax.yaxis.set_major_formatter(yticks)
 
@@ -476,21 +468,8 @@ elif spec_feat in ('CII]'):
 	xmax = wavlim15[1] + 2.
 
 #define y-limits
-if spec_feat == 'CII':
-	ymax = 1.4*max(flux_ax)
-	ymin = -0.1*max(flux_ax)
-
-elif spec_feat == 'CII]' or spec_feat == 'NIV]' or spec_feat == 'SiIV':
-	ymax = 1.3*max(flux_ax)
-	ymin = -0.1*max(flux_ax)
-
-elif spec_feat in ('NV','OIII]'):
-	ymax = 1.2*max(flux_ax)
-	ymin = -0.1*max(flux_ax)
-
-elif spec_feat == 'HeII' or spec_feat == 'CIII]':
-	ymax = 1.2*max(flux_ax)
-	ymin = -0.1*max(flux_ax)
+ymax = 1.2*max(flux_ax)
+ymin = -0.1*max(flux_ax)
 
 #draw line representing central velocity of spectral feature
 if spec_feat in ('HeII','NIV]','SiIV','CII]','CII'):
