@@ -7,11 +7,9 @@
 #   0943-242 redshift = 2.923
 
 import matplotlib.pyplot as pl
-import matplotlib.text as mpt
 import numpy as np
 
 import spectral_cube as sc
-import astropy.units as u
 import mpdaf.obj as mpdo
 
 import matplotlib.ticker as tk
@@ -59,10 +57,11 @@ np.savetxt('./out/0943_spectrum.txt', wavs_data, fmt=['%-10s']+['%.2f']+['%.2f']
 # -------------------------
 
 #load cube and extract region of interest
-cube_ = sc.SpectralCube.read("/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrom_corr.fits",hdu=1,format='fits')
-spec_cube 	= cube_[:,185:285,120:220]		
-spec_cube.write("/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits", overwrite=True)
-cube = mpdo.Cube("/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits")
+cube_ 		= sc.SpectralCube.read("/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrom_corr.fits",hdu=1,format='fits')
+spec_cube 	= cube_[:,185:285,120:220]	
+fname 		= "/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits"	
+spec_cube.write(fname, overwrite=True)
+cube = mpdo.Cube(fname)
 # cube.info()
 
 fig = pl.figure(figsize=(18,8))
