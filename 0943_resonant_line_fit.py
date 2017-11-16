@@ -47,7 +47,7 @@ hdr 	 = mpdo.Cube(fname,ext=0)
 datacube = mpdo.Cube(fname,ext=1)
 varcube  = mpdo.Cube(fname,ext=2)
 
-HeII 			= datacube.subcube_circle_aperture(center=(52,46),radius=14,\
+HeII 			= datacube.subcube_circle_aperture(center=(84,45),radius=14,\
 	unit_center	=None,unit_radius=None)
 spec_HeII 		= HeII.sum(axis=(1,2))
 
@@ -104,11 +104,11 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	# 		EXTRACT SPECTRAL REGION OF LINE
 	# -----------------------------------------------
 
-	glx		= datacube.subcube_circle_aperture(center=(52,46),radius=6,\
+	glx		= datacube.subcube_circle_aperture(center=(84,45),radius=6,\
 			unit_center=None,unit_radius=None)
 	spec 	= glx.sum(axis=(1,2))
 
-	var_glx = varcube.subcube_circle_aperture(center=(52,46),radius=6,\
+	var_glx = varcube.subcube_circle_aperture(center=(84,45),radius=6,\
 			unit_center=None,unit_radius=None)
 	var_spec = glx.sum(axis=(1,2))
 
@@ -214,7 +214,7 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 		# fit 	= mod.fit(flux_ax,pars,x=wav,weights=flux_wght,fit_kws={'nan_policy':'omit'})
 
-		# print fit.fit_report()
+		print fit.fit_report()
 
 		wav_o 		= fit.params['g_cen2'].value
 		wav_o_err 	= fit.params['g_cen2'].stderr
@@ -271,7 +271,7 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 		# fit 	= mod.fit(flux_ax,pars,x=wav,weights=flux_wght,fit_kws={'nan_policy':'omit'})
 
-		# print fit.fit_report()
+		print fit.fit_report()
 
 		wav_o1 		= fit.params['g_cen1'].value
 		wav_o_err1 	= fit.params['g_cen1'].stderr	
@@ -397,19 +397,19 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	xmin = wavlim3[0] - 2.
 	xmax = wavlim3[1] + 2.
 	
-	#draw line representing central velocity of spectral feature
-	if spec_feat == 'Lya':
-		pl.plot([wav_o,wav_o],[ymin,ymax],color='green',ls='--')
+	# #draw line representing central velocity of spectral feature
+	# if spec_feat == 'Lya':
+	# 	pl.plot([wav_o,wav_o],[ymin,ymax],color='green',ls='--')
 
-	elif spec_feat == 'CIV':
-		pl.plot([wav_o1,wav_o1],[ymin,ymax],color='green',ls='--')
-		pl.plot([wav_o2,wav_o2],[ymin,ymax],color='green',ls='--')
+	# elif spec_feat == 'CIV':
+	# 	pl.plot([wav_o1,wav_o1],[ymin,ymax],color='green',ls='--')
+	# 	pl.plot([wav_o2,wav_o2],[ymin,ymax],color='green',ls='--')
 	
 	#draw plot
 	pl.title(spec_feat+' Fit')
 	ax.set_xlabel( 'Velocity Offset (km/s)' )
 	ax.set_ylabel( r'Flux Density ($\mu$Jy)' )
-	ax.set_ylim([ymin,ymax])
+	# ax.set_ylim([ymin,ymax])
 	ax.set_xlim([xmin,xmax])
 	pl.plot([xmin,xmax],[0.,0.],ls='--',color='grey')	#zero flux density-axis
 	pl.savefig('out/line-fitting/'+spec_feat+' Fit.eps')

@@ -24,11 +24,17 @@ import time
 start_time = time.time()
 
 #wavelength ranges determined via visual inspection in QFitsView
-spec_feat 	= [ 'Lya',  'NV', 'CII', 'SiIV', 'NIV]', 'CIV','HeII','OIII]','CIII]','CII]']
-lam1 		= [ 4680., 4820., 5158., 5350., 5656., 5918., 6368.,  6480.,  7110., 9005.]
-lam2		= [ 4848., 4914., 5332., 5664., 5984., 6234., 6494.,  6575.,  7888., 9260.]
-mask1		= [ 4714., 4846., 5225., 5448., 5778., 6038., 6400.,  6508.,  7438., 9078.]
-mask2		= [ 4820., 4890., 5265., 5552., 5880., 6120., 6468.,  6552.,  7530., 9170.]
+# spec_feat 	= [ 'Lya',  'NV', 'CII', 'SiIV', 'NIV]', 'CIV','HeII','OIII]','CIII]','CII]']
+# lam1 			= [ 4680., 4820., 5158., 5350., 5656., 5918., 6368.,  6480.,  7110., 9005.]
+# lam2			= [ 4848., 4914., 5332., 5664., 5984., 6234., 6494.,  6575.,  7888., 9260.]
+# mask1			= [ 4714., 4846., 5225., 5448., 5778., 6038., 6400.,  6508.,  7438., 9078.]
+# mask2			= [ 4820., 4890., 5265., 5552., 5880., 6120., 6468.,  6552.,  7530., 9170.]
+
+spec_feat 	= ['OIII]']
+lam1 		= [6480.]
+lam2 		= [6575.]
+mask1 		= [6508.]
+mask2 		= [6552.]
 
 for spec_feat,lam1,lam2,mask1,mask2 in zip(spec_feat,lam1,lam2,mask1,mask2):
 	#ignore those pesky warnings
@@ -39,7 +45,7 @@ for spec_feat,lam1,lam2,mask1,mask2 in zip(spec_feat,lam1,lam2,mask1,mask2):
 	#----------------
 	# LOAD data cubes
 	#----------------
-	##astrometry-corrected sky-subtracted cube
+	##astrometry corrected sky subtracted cube
 	fname			= "/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrocorr.fits"
 	datacube		= mpdo.Cube(fname, ext=1, mmap=True)
 	# datacube		= sc.SpectralCube.read(fname,hdu=1,mmap=True)
@@ -60,12 +66,12 @@ for spec_feat,lam1,lam2,mask1,mask2 in zip(spec_feat,lam1,lam2,mask1,mask2):
 
 	print 'Initialising empty cube onto which we write the continuum solution...'
 
-	cont 		= emi.clone(data_init = np.empty, var_init = np.empty) # empty cube with same dim
-	emi_copy 	= emi.copy()								# copy of wavelength truncated subcube
+	cont 		= emi.clone(data_init = np.empty, var_init = np.empty) 	# empty cube with same dim
+	emi_copy 	= emi.copy()											# copy of wavelength truncated subcube
 
 	emi = emi - cont
 
-	emi.write('./out/'+spec_feat+'.fits')
+ 	emi.write('./out/'+spec_feat+'.fits')
 
 	print 'Masking copy of wavelength truncated cube...'
 
