@@ -54,7 +54,7 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	# LINE EMISSION
 	#---------------
 	fig = pl.figure()
-	cont_cube_ap 	= cube.subcube_circle_aperture(center=(50,45),radius=4,unit_center=None,unit_radius=None)
+	cont_cube_ap 	= cube.subcube_circle_aperture(center=(84,106),radius=4,unit_center=None,unit_radius=None)
 	spec = cont_cube_ap.sum(axis=(1,2))
 	spec.plot(color='black',zorder=1)
 	p1,p2 			= spec.wave.pixel([lam1,lam2], nearest=True)

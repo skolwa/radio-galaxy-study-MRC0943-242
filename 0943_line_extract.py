@@ -1,54 +1,60 @@
-#S.N. Kolwa (2017)
-#0943_line_extract.py
-# Purpose: 
-# - Extract spatial region of interest i.e. AGN host galaxy
-# - Extract spectral region i.e. line emission 
-# - No continuum-subtraction done on line spectra
-# - Pure line-extraction 
+#		S.N. Kolwa (2017)
+#		0943_line_extract.py
+# 		Purpose: 
+# 			- Create subcube for spatial region of interest i.e. radio galaxy
+# 			- Extract subcubes for spectral regions isolated line species
+
+#source-specific input: 
+#1. wavelength-ranges for line extraction
+#2. size of truncated field from full datacube of observation
+
+# ---------
+#  modules
+# ---------
 
 import matplotlib.pyplot as pl
-import matplotlib as mpl
 import numpy as np 
 
-import spectral_cube as sc
-import astropy.units as u
 from astropy.io import fits
-from wcsaxes import WCSAxes
-from astropy.wcs import WCS
+import spectral_cube as sc
 import mpdaf.obj as mpdo
+import mpdaf
 
 import warnings
 from astropy.utils.exceptions import AstropyWarning
+
 import sys
 import time
 
-import itertools as it
-
 start_time = time.time()
 
-spec_feat 		= ['HeII','CIII]','CII]','NV','CII','SiIV','NIV]','OIII]','CIV','Lya']
-lam1    		= [6370.,  7420.,  9055.,4805.,5200.,5415., 5778., 6470.,  6000.,4700.]
-lam2    		= [6495.,  7545.,  9185.,4940.,5290.,5585., 5885., 6580.,  6150.,4835.]
+spec_feat 	= ['Lya','NV','CII','SiIV','NIV]','CIV','HeII','OIII]','CIII]','CII]']
+lam1 		= [4600.,4818.,5015.,5276.,5640., 5842., 6135., 6478.,  6632.,  8994.]
+lam2 		= [4990.,5026.,5468.,5792.,6020., 6334., 6828., 6626.,  8520.,  9302.]
 
+#ignore those pesky warnings
+warnings.filterwarnings('ignore', category=UserWarning, append=True)
+warnings.simplefilter('ignore', category=AstropyWarning)
+
+#import astrometry corrected, sky subtracted cube
+fname		= "/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrocorr.fits"
+cube		= mpdo.Cube(fname,mmap=True)
+
+#radio galaxy and CGM subcube
+rg 			= cube[:,155:300,60:240]
+
+fname 	= "/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_glx_line.fits"
+rg.write(fname)
+
+spec 	= rg.sum( axis=(1,2) )
 for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
-	#ignore those pesky warnings
-	warnings.filterwarnings('ignore', category=UserWarning, append=True)
-	warnings.simplefilter('ignore', category=AstropyWarning)
-	
-	#----------------
-	# LOAD data cubes
-	#----------------
-	##spectral-cube load more durable than mpdaf load
-	cube_ 		= sc.SpectralCube.read("/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrom_corr.fits",hdu=1,format='fits')
-	spec_cube 	= cube_[:,185:285,120:220]	
-	fname = "/Users/skolwa/DATA/MUSE_data/0943-242/0943_spec_cube.fits"	
-	cube 		= mpdo.Cube(fname)
-	
-	#------------------
-	#  LINE EMISSION
-	#------------------
-	#isolate continuum around the spectral line feature
-	m1,m2 	= cube.wave.pixel([lam1,lam2], nearest=True)
-	emi 	= cube[m1:m2+1,:,:]
-	
+	print "Extracting line subcube for "+spec_feat+" ..."
+
+	m1,m2 	= spec.wave.pixel( [lam1,lam2], nearest=True ) 
+	emi 	= rg[m1:m2,:,:]
+
 	emi.write('./out/'+spec_feat+'.fits')
+
+	#duration of process
+	elapsed = (time.time() - start_time)
+	print "build time: %f s" % elapsed	
