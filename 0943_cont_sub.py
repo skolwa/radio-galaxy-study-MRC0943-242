@@ -44,7 +44,7 @@ for spec_feat,lam1,lam2,mask1,mask2 in zip(spec_feat,lam1,lam2,mask1,mask2):
 	cube		= mpdo.Cube(fname,mmap=True)
 	
 	#radio galaxy and CGM subcube
-	rg 			= cube[:,210:285,80:250]
+	rg 			= cube[:,150:300,90:240]
 	
 	fname 	= "/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_glx_cont.fits"
 	rg.write(fname)
