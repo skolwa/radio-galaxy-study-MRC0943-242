@@ -6,6 +6,7 @@
 # - Wavelength axis in velocity offset w.r.t. HeII (systemic velocity)
 # - Flux axis in micro-Jy
 # - Double Gaussian in HeII to account for blueshifted component
+# - Taken into account blueshifted component detected with highest S/N in HeII
 
 import matplotlib.pyplot as pl
 import numpy as np 
@@ -345,7 +346,7 @@ for spec_feat in spec_feat:
 	if spec_feat 	== 'NIV]':
 		wav_e = lam
 		header = np.array( \
-			["#wav0(Ang)          wav0_err       flux_peak(erg/s/cm^2/Ang)     flux_peak_err	sigma(Ang)    	   sigma_err   	  fwhm(km/s)   		fwhm_err      wav_rest(Ang) spec_feat"] )
+			["#wav0(Ang)          wav0_err       flux_peak(10^{-20}erg/s/cm^2/Ang)     flux_peak_err	sigma(Ang)    	   sigma_err   	  fwhm(km/s)   		fwhm_err      wav_rest(Ang) spec_feat"] )
 
 		gauss_fit_params = np.array([wav_o, wav_o_err, amp, amp_err,\
 		 wid, wid_err, fwhm_kms, fwhm_kms_err, wav_e, spec_feat])
@@ -565,8 +566,8 @@ for spec_feat in spec_feat:
 	ax.set_ylabel( r'Flux Density ($\mu$Jy)', fontsize=16 )
 	ax.set_ylim([ymin,ymax])
 	ax.set_xlim([xmin,xmax])
-	pl.savefig('./out/line-fitting/emission_line_fit/'+spec_feat+'_2_fit.png')
-	pl.savefig('/Users/skolwa/PUBLICATIONS/0943_resonant_lines_letter/plots/'+spec_feat+'_2_fit.pdf')
+	pl.savefig('./out/line-fitting/emission_line_fit/'+spec_feat+'_0.2_fit.png')
+	pl.savefig('/Users/skolwa/PUBLICATIONS/0943_resonant_lines_letter/plots/'+spec_feat+'_fit.pdf')
 
 
 #align columns in text file for better readability
