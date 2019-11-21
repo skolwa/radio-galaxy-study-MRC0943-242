@@ -1,5 +1,6 @@
-# S.N. Kolwa (2018)
-# MRC0943_line_fit_0.4.py
+# S.N. Kolwa
+# ESO (2018)
+# MRC0943_line_fit.py
 
 # Purpose:  
 # - Non-resonant line profile fit i.e. Gaussian fits
@@ -37,6 +38,8 @@ pl.rc('text', usetex=True)
 #ignore those pesky warnings
 warnings.filterwarnings('ignore' , 	category=UserWarning, append=True)
 warnings.simplefilter  ('ignore' , 	category=AstropyWarning          )
+
+home = sys.argv[1]
 
 spec_feat   = [ 'HeII', 'NIV]', 'OIII]', 'CIII]', 'CII]']
 
@@ -568,17 +571,16 @@ for spec_feat in spec_feat:
 
 	elif spec_feat == 'NIV]':
 		wav_cent = wav_o 
-		maxf = flux_Jy(wav_cent,max(flux))*1.e6   #max flux in microJy
+		maxf = flux_Jy(wav_cent,max(flux))*1.e6   
 
 	elif spec_feat == 'CII]':
 		wav_cent = wav_o[0]
-		maxf = flux_Jy(wav_cent,max(flux))*1.e6   #max flux in microJy
+		maxf = flux_Jy(wav_cent,max(flux))*1.e6   
 
 	else:
 		wav_cent = wav_o[1]
-		maxf = flux_Jy(wav_cent,max(flux))*1.e6   #max flux in microJy	
-	
-	#need a better way of creating these tick!
+		maxf = flux_Jy(wav_cent,max(flux))*1.e6 
+
 	if maxf < 1.:
 		flux0 = flux_cgs(wav_cent,0.)
 		flux05 = flux_cgs(wav_cent,0.5e-6)
@@ -705,9 +707,7 @@ for spec_feat in spec_feat:
 	ax.set_xlim([xmin,xmax])
 	pl.savefig('./out/line-fitting/emission_line_fit/'+spec_feat+'_0.4_fit.png')
 	if spec_feat in ('CIII]', 'CII]'):
-		pl.savefig('/Users/skolwa/PUBLICATIONS/0943_absorption/plots/'+spec_feat+'_fit.pdf')
-
-# pl.show()
+		pl.savefig(home+'PUBLICATIONS/0943_absorption/plots/'+spec_feat+'_fit.pdf')
 
 #align columns in text file for better readability
 res = "./out/line-fitting/emission_line_fit/0943 fit.txt"

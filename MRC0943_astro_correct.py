@@ -1,4 +1,5 @@
-# S.N. Kolwa (2017)
+# S.N. Kolwa
+# ESO (2017)
 # MRC0943_astro_correct.py
 
 # Purpose: 
@@ -9,10 +10,11 @@ from math import*
 
 from astropy.io import fits
 
-fname = '/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP.fits'
+home = sys.argv[1]
+fname = home+'DATA/MUSE_data/0943-242/MRC0943_ZAP.fits'
 
 #obtain GAIA catalogue for std stars in field 
-GAIA_std_stars = np.genfromtxt('/Users/skolwa/PHD_WORK/catalogues/field_MRC0943_GAIA_DR2.txt', usecols=(0,1))
+GAIA_std_stars = np.genfromtxt(home+'PHD_WORK/catalogues/field_MRC0943_GAIA_DR2.txt', usecols=(0,1))
 
 n = len(GAIA_std_stars)
 
@@ -53,4 +55,4 @@ crval2 = hdr['crval1']
 hdr['crval1'] = crval1 + av_ra_offset
 hdr['crval2'] = crval2 + av_dec_offset
 
-hdulist.writeto('/Users/skolwa/DATA/MUSE_data/0943-242/MRC0943_ZAP_astrocorr.fits',clobber=False)
+hdulist.writeto(home+'DATA/MUSE_data/0943-242/MRC0943_ZAP_astrocorr.fits',clobber=False)

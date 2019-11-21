@@ -1,4 +1,5 @@
-# S.N. Kolwa (2017)
+# S.N. Kolwa 
+# ESO (2017)
 # MRC0943_NB_imgs.py
 
 # Purpose: 
@@ -41,6 +42,8 @@ img_scale = 'linear'
 warnings.filterwarnings('ignore', category=UserWarning, append=True)
 warnings.simplefilter  ( 'ignore', category=AstropyWarning         )
 
+home = sys.argv[1]
+
 #custom-selected min,max wavelengths
 spec_feat 	= ['HeII','HeII', 'HeII', 'CIV','CIII]','CII]','CII','SiIV','OIII]','NIV]','NV']+['Lya']*4 
 lam1 		= [6425., 6400., 6445., 6050., 7455., 9096., 5232., 5472., 6532., 5820., 4848., 4732.5, 4754.3, 4768.8, 4778.8]
@@ -54,7 +57,6 @@ def vel(wav_obs,wav_em,z):
 
 #display spectral range on the spectrum plot
 #for Lya and HeII, different colour regions on same plot hence arrays below
-
 Lya1 = [lam1[11], lam2[11]]
 Lya2 = [lam1[12], lam2[12]]
 Lya3 = [lam1[13], lam2[13]]
@@ -90,8 +92,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 	pl.figure(figsize=(8,8))
 	pl.subplots(1,1)
-	# cont_cube_ap 	= cube.subcube_circle_aperture(center=center, radius=radius,unit_center=None,unit_radius=None)
-	# spec = cont_cube_ap.sum(axis=(1,2))
 
 	# #shift centre
 	center1 = (center[0]-1,center[1]-1)
@@ -128,8 +128,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	for label in ax.yaxis.get_majorticklabels():
 		label.set_fontsize(15)
 
-	# ax.yaxis.set_major_formatter( tk.FuncFormatter(lambda x,pos: '%.1f'%(x*1.e-2) ) )	
-
 	if spec_feat == 'Lya':
 		spec.plot(c='k')
 
@@ -137,8 +135,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 		pl.axvspan(Lya2[0],Lya2[1],ymax=0.98,color='green',alpha=0.2)
 		pl.axvspan(Lya3[0],Lya3[1],ymax=0.98,color='orange',alpha=0.2)
 		pl.axvspan(Lya4[0],Lya4[1],ymax=0.98,color='red',alpha=0.2)
-		# pl.title(spec_feat+r' integrated flux widths')
-		# pl.savefig('./out/narrow-band/Lya_profile.png')
 
 	elif spec_feat == 'HeII':
 		N = len(wav)
@@ -150,24 +146,18 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 		pl.axvspan(HeII1[0],HeII1[1],ymax=0.98,color='green',alpha=0.2)
 		pl.axvspan(HeII2[0],HeII2[1],ymax=0.98,color='blue',alpha=0.2)
 		pl.axvspan(HeII3[0],HeII3[1],ymax=0.98,color='red',alpha=0.2)
-		# pl.title(spec_feat+r' integrated flux widths')
 		pl.xlim(-2500.,2500.)
 		pl.subplots_adjust(left=0.2,top=0.98)
-		# pl.savefig('./out/narrow-band/HeII_profile.png')
-		# pl.savefig('./out/narrow-band/HeII_profile.pdf')
-		# pl.savefig('/Users/skolwa/PUBLICATIONS/0943_absorption/plots/HeII_profile.pdf')
 
 	else:
 		spec.plot(c='k')
 
-		pl.axvspan(lam1,lam2,ymax=0.98,color='magenta',alpha=0.2)
-		# pl.title(spec_feat+r' integrated flux width ('+`int(lam1)`+'-'+`int(lam2)`+'$\AA$)')
-		# pl.savefig('./out/narrow-band/'+spec_feat+'_profile.png') 
+		pl.axvspan(lam1,lam2,ymax=0.98,color='magenta',alpha=0.2) 
 	
 	#------------------
 	# get VLA CONTOURS
 	#------------------
-	vla = fits.open('/Users/skolwa/DATA/VLA_DATA/0943C.ICLN')[0]
+	vla = fits.open(home+'/DATA/VLA_DATA/0943C.ICLN')[0]
 	wcs_vla = WCS(vla.header).celestial
 	
 	#define contour parameters
@@ -184,23 +174,11 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	for i in range(1,number_contours):
 		contours[i] = start_level*(np.sqrt(2))*odd_number
 		odd_number	+= 2
-	# 	print odd_number
-	
-	# print contours
-	# print start_level
-
-	# fig = pl.figure(figsize=(10,10))
-	# fig.add_subplot(111,projection=wcs_vla)
+å
 	vla_arr = vla.data[0,0,:,:]
-
-	# pl.contour(vla_arr,levels=contours,colors='white')
-	# ax = pl.imshow(vla_arr,origin='lower',cmap='gist_gray',vmin=-50,vmax=1000)
-	# pl.colorbar(ax,orientation = 'vertical')
-	# pl.savefig("./out/narrow-band/VLA_cont_0943.png")
-	# pl.show()
 	
 	#save VLA .ICLN file in .fits format
-	fits.writeto('/Users/skolwa/DATA/VLA_DATA/0943C.fits',vla_arr,clobber=True)
+	fits.writeto(home+'/DATA/VLA_DATA/0943C.fits',vla_arr,clobber=True)
 
 	#5arcsec -> kpc conversion
 	dl 	  = ac.Planck15.luminosity_distance(2.923)	#Mpc
@@ -209,9 +187,7 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 	theta = D*(1.+z)**2/(dl.value*1000.)  #radians
 	theta_arc = theta*206265.		#arcsec
-
-	# print "%.2f arcsec = 40 kpc" %theta_arc
-
+å
 	#----------------------------------------------------------------
 	#  OVERLAY VLA contours on Gaussian-smoothed narrow band images
 	#----------------------------------------------------------------
@@ -257,8 +233,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 		wcs_HeII 		= WCS(HeII_offset_img.header).celestial
 		HeII_offset_arr = HeII_offset_img.data[:,:] 
 
-		# contours_HeII = [0.93461, 1.51497, 2.09533, 2.67569, 3.25605, 3.83641]
-		# contours_HeII = [1.2000, 1.8788, 2.85761, 3.83641]
 		contours_HeII 		= [ 1.5, 3.1682, 4.83641 ]  #1.e-20 erg/s/cm^2/pix
 		contours_HeII_conv 	= [ contours_HeII[i]/0.04e3 for i in xrange(3) ]
 
@@ -278,9 +252,6 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	ax1.contour(vla_arr,levels=contours, colors='red', transform=ax1.get_transform(wcs_vla),linewidths=0.8)
 	pl.annotate(s='', xy=(1.4,1.4), xytext=(15.5,1.4), arrowprops=dict(arrowstyle='->',ec='red'))		#horizontal
 	pl.annotate(s='', xy=(15.,15.), xytext=(15.,0.8), arrowprops=dict(arrowstyle='->',ec='red'))		#vertical
-
-	# pl.annotate(s='', xy=(98.,1.4), xytext=(72.,1.4), arrowprops=dict(arrowstyle='-',ec='red'))
-	# pl.text(0.78,0.04,'40 kpc',fontsize=20,color='red', transform=ax1.transAxes)
 
 	pl.text(14.3,15,'N',color='red', fontsize=26)
 	pl.text(-0.3,0.5,'E',color='red', fontsize=26)
@@ -320,17 +291,17 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 		transform=ax1.get_transform(wcs), vmin=0.4*vmin, vmax=vmax)
 		pl.savefig("./out/narrow-band/png/"+spec_feat+"_green_VLA_arcsec.png") 
 		pl.savefig("./out/narrow-band/"+spec_feat+"_green_VLA_arcsec.pdf")
-		pl.savefig("/Users/skolwa/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_green_VLA_arcsec.pdf")
+		pl.savefig(home+"/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_green_VLA_arcsec.pdf")
 
 	elif lam1 == 6400.: 
 		pl.savefig("./out/narrow-band/png/"+spec_feat+"_blue_VLA_arcsec.png") 
 		pl.savefig("./out/narrow-band/"+spec_feat+"_blue_VLA_arcsec.pdf")
-		pl.savefig("/Users/skolwa/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_blue_VLA_arcsec.pdf")
+		pl.savefig(home+"/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_blue_VLA_arcsec.pdf")
 
 	elif lam1 == 6445.:
 		pl.savefig("./out/narrow-band/png/"+spec_feat+"_red_VLA_arcsec.png") 
 		pl.savefig("./out/narrow-band/"+spec_feat+"_red_VLA_arcsec.pdf")
-		pl.savefig("/Users/skolwa/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_red_VLA_arcsec.pdf")
+		pl.savefig(home+"/PUBLICATIONS/0943_absorption/plots/"+spec_feat+"_red_VLA_arcsec.pdf")
 
 	elif lam1 == 4732.5:
 		pl.savefig("./out/narrow-band/png/"+spec_feat+"1_grey_VLA_arcsec.png")

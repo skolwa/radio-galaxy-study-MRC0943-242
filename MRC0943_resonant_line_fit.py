@@ -1,10 +1,11 @@
-#S.N. Kolwa (2018)
-#MRC0943_resonant_line_fit_0.8.py
+# S.N. Kolwa
+home = sys.argv[1]
+# MRC0943_resonant_line_fit.py
+
 # Purpose:  
 # - Resonant line profile fit i.e. Gaussian and Voigt
 # - Flux in uJy 
 # - Wavelength axis in velocity offset w.r.t. HeII (systemic velocity)
-
 # - fits 4 Lya absorbers 
 # - fits 3 CIV, NV, SiIV absorbers
 # - double gaussian in HeII and Lya to account for gas blueshifted relative to systemic
@@ -36,6 +37,7 @@ from time import time
 
 import corner
 import os
+import sys
 
 params = {'legend.fontsize': 15,
           'legend.handlelength': 2}
@@ -51,6 +53,8 @@ t_start = time()
 warnings.filterwarnings('ignore' , 	category=UserWarning, append=True)
 warnings.simplefilter  ('ignore' , 	category=AstropyWarning          )
 warnings.simplefilter  ('ignore' , 	category=RuntimeWarning          )
+
+home = sys.argv[1]
 
 spec_feat = ['Lya', 'NV',  'SiIV', 'CIV', 'HeII']
 
@@ -251,7 +255,7 @@ ax_up.plot(wav,[0]*len(wav),c='None')
 ax_up.set_xlabel(r'$\lambda_{\rm obs}$ ($\AA$)', fontsize=15)
 ax.set_xlabel(r'$\Delta v$ (km s$^{-1}$)', fontsize=15)	
 pl.savefig('out/line-fitting/4_component_Lya_plus_blue_comp/HeII.png')
-pl.savefig('/Users/skolwa/PUBLICATIONS/0943_absorption/plots/HeII_profile.pdf')
+pl.savefig(home+'/PUBLICATIONS/0943_absorption/plots/HeII_profile.pdf')
 
 # -----------------------------------------------
 # 	   			CONSTANTS (cgs)	
@@ -1863,7 +1867,7 @@ for spec_feat in spec_feat:
 		ax.set_ylim([0.,1.6*y])
 
 	pl.savefig('out/line-fitting/4_component_Lya_plus_blue_comp/'+spec_feat+'_fit_0.8.png')
-	pl.savefig('/Users/skolwa/PUBLICATIONS/0943_absorption/plots/'+spec_feat+'_fit.pdf')
+	pl.savefig(home+'/PUBLICATIONS/0943_absorption/plots/'+spec_feat+'_fit.pdf')
 
 	# -----------------------------------------------
 	# 	   Write Gaussian parameters to file
