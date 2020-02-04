@@ -9,7 +9,7 @@ In this project, datacube image was that of radio galaxy named <a href="https://
 
 
 <figure>
-<img src="muse_datacube.jpg" height="300">
+<img align="middle" src="muse_datacube.jpg" height="300x">
   <figcaption>Fig. 1: A MUSE datacube depicting the 2D images that are obtained at different wavelengths along the 1D spectrum. Ionisation lines are shown at their respective wavelengths.</figcaption>
 </figure>
 
