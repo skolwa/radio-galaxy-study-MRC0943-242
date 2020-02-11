@@ -7,7 +7,6 @@ The telescope used to obtain the data is the <a href="https://www.eso.org/public
 
 <figure>
 <img align="middle" src="muse_datacube.jpg" height="300x">
-  <figcaption>Fig. 1: </figcaption>
 </figure>
 
 In this project, datacube image was that of radio galaxy named <a href="https://ned.ipac.caltech.edu/byname?objname=MRC%200943-242&hconst=67.8&omegam=0.308&omegav=0.692&wmap=4&corr_z=1">MRC0943-242</a> and the projected area of approximately 500 kpc x 500 kpc around it. The optical data permitted us to constrain the kinematics, mass and structure of ionised gas surrounding the galaxy.
