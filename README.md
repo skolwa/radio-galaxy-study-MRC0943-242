@@ -6,7 +6,7 @@ This repository contains several Python modules that were used to carry out the 
 The telescope used to obtain the data is the <a href="https://www.eso.org/public/teles-instr/paranal-observatory/vlt/">Very Large Telescope (the VLT)</a> located at the ESO Obsevatory in Paranal, Chile. The instrument from whence the datacubes came has a nice rockstar name - MUSE - which is an acronym that reads out fully as <a href="https://www.eso.org/sci/facilities/develop/instruments/muse.html">Multi-unit Spectroscopic Explorer</a>. The instrument is an integral field unit spectrograph that is capable of obtaining a 1D spectrum for every pixel in its field of view. The datacube produced is therefore three dimensional with the spatial co-ordinates mapped such that, (x,y,z) = (right-ascension, declination, wavelength). This is shown in the figure below which illustrates how a MUSE datacube is a series of 2D images obtained at different wavelengths. Some common spectral lines are represented in the spectrum.  
 
 <figure>
-<img align="middle" src="muse_datacube.jpg" height="300x">
+<img align="middle" src="muse_datacube.jpg" height="300x" class="center">
 </figure>
 
 In this project, datacube image was that of radio galaxy named <a href="https://ned.ipac.caltech.edu/byname?objname=MRC%200943-242&hconst=67.8&omegam=0.308&omegav=0.692&wmap=4&corr_z=1">MRC0943-242</a> and the projected area of approximately 500 kpc x 500 kpc around it. The optical data permitted us to constrain the kinematics, mass and structure of ionised gas surrounding the galaxy.
