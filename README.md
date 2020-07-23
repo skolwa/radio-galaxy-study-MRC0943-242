@@ -1,11 +1,12 @@
 # radio-galaxy-study-MRC0943-242
 
 ## Background
+
 This repository contains several Python scripts which I have used to carry out the data processing, extraction, analysis and visualisation of an astronomical datacube. 
 
 The data have been acquired using the <a href="https://www.eso.org/public/teles-instr/paranal-observatory/vlt/">Very Large Telescope (VLT)</a> operated by the European Southern Obsevatory (ESO) and located at the Paranal Observatory in Chile. The instrument from whence the raw data have been sourced has a nice rockstar name - MUSE - which is an acronym for <a href="https://www.eso.org/sci/facilities/develop/instruments/muse.html">Multi-unit Spectroscopic Explorer</a>. MUSE is an integral field unit spectrograph that is capable of obtaining 1D spectra for every pixel in the field of view imaged by the telescope. It's very cool. 
 
-The datacube produced from the raw observations is therefore a tensor which contains the pixel CCD (charged couple device) counts. In astronomical terms, the datacube represents a three dimensional Cartesian co-ordinate system where (x,y,z) are mapped to (right-ascension, declination, wavelength). The figure also demonstrates how spectral emission and absorption lines can be detected along the wavelength-axis e.g. [OIII], HeII, HeI and H&#x03B1;.
+The datacube produced from the raw observations is therefore a tensor contains detector pixel CCD (charged couple device) counts. In astronomical terms, the datacube represents a three dimensional Cartesian co-ordinate system where (x,y,z) are mapped onto (right-ascension, declination, wavelength). The figure also demonstrates how spectral emission and absorption lines can be detected along the wavelength-axis e.g. [OIII], HeII, HeI and H&#x03B1;.
 
 <p align="center">
 <img src="muse_datacube.jpg" height="300x" class="center">
@@ -17,6 +18,7 @@ In this specific project, the datacube is that of a distant radio galaxy with th
 
 
 ## Usage
+
 This collection of Python scripts are customised to my specific use-case. However, they can easily be used as a template for performing similar data analyses. 
 
 Python dependencies:
