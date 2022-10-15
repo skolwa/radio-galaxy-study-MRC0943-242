@@ -139,7 +139,7 @@ amp_HeII_err   = fit.params['amp2'].stderr
 wid_HeII       = fit.params['wid2'].value
 wid_HeII_err   = fit.params['wid2'].stderr
 
-delg           = wav_o_HeII_err 		#error on gaussian centre for all lines
+delg           = wav_o_HeII_err 	
 
 for spec_feat in spec_feat:
 	print spec_feat
