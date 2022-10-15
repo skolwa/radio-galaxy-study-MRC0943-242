@@ -102,13 +102,13 @@ cont_HeII = np.mean(cont)
 spec_HeII_sub = spec_HeII - cont
 
 #continuum subtracted data
-wav 	=  spec_HeII_sub.wave.coord()  		#1.e-8 cm
-flux 	=  spec_HeII_sub.data				#1.e-20 erg / s / cm^2 / Ang
+wav 	=  spec_HeII_sub.wave.coord()    #1.e-8 cm
+flux 	=  spec_HeII_sub.data            #1.e-20 erg / s / cm^2 / Ang
 
 wav_e_HeII 	= 1640.4
-z 			= 2.923 					#estimate from literature
+z 			= 2.923 					
 g_cen 		= wav_e_HeII*(1.+z)
-g_blue 		= 6414.						#estimate from visual look at spectrum
+g_blue 		= 6414.						
 
 pars = Parameters()
 
@@ -128,18 +128,18 @@ print fit.fit_report()
 
 res 	= fit.params
 
-g_blue 			= fit.params['g_cen1'].value
-amp_blue		= fit.params['amp1'].value
-wid_blue 		= fit.params['wid1'].value
+g_blue         = fit.params['g_cen1'].value
+amp_blue       = fit.params['amp1'].value
+wid_blue       = fit.params['wid1'].value
 
-wav_o_HeII 		= fit.params['g_cen2'].value
-wav_o_HeII_err 	= fit.params['g_cen2'].stderr
-amp_HeII 		= fit.params['amp2'].value
-amp_HeII_err	= fit.params['amp2'].stderr
-wid_HeII 		= fit.params['wid2'].value
-wid_HeII_err	= fit.params['wid2'].stderr
+wav_o_HeII     = fit.params['g_cen2'].value
+wav_o_HeII_err = fit.params['g_cen2'].stderr
+amp_HeII       = fit.params['amp2'].value
+amp_HeII_err   = fit.params['amp2'].stderr
+wid_HeII       = fit.params['wid2'].value
+wid_HeII_err   = fit.params['wid2'].stderr
 
-delg 			= wav_o_HeII_err 		#error on gaussian centre for all lines
+delg           = wav_o_HeII_err 		#error on gaussian centre for all lines
 
 for spec_feat in spec_feat:
 	print spec_feat
@@ -184,8 +184,8 @@ for spec_feat in spec_feat:
 	# 	  MODEL FIT to EMISSION LINE
 	# -----------------------------------
 
-	wav 	=  spec.wave.coord()  		#Ang
-	flux 	=  spec.data				#1.e-20 erg / s / cm^2 / Ang
+	wav 	=  spec.wave.coord()    #Ang
+	flux 	=  spec.data            #1.e-20 erg / s / cm^2 / Ang
 
 	# estimate central Gaussian wavelengths
 	if spec_feat in 'HeII':			
@@ -196,7 +196,7 @@ for spec_feat in spec_feat:
 		lam   = 2326.9
 		g_cen = lam*(1.+z)
 		z_blue = 2.909
-		g_cen_blue = lam*(1+z_blue) 		# initial guess for redshift of blueshifted emission from HeII fit 
+		g_cen_blue = lam*(1+z_blue) 		
 
 	elif spec_feat == 'NIV]':
 		lam   = 1486.5
@@ -438,8 +438,9 @@ for spec_feat in spec_feat:
 	pl.text(0.12,0.95, redchisqr, ha='center', va='center',transform = ax.transAxes, fontsize=18)
 
 	pl.plot(wav,flux,drawstyle='steps-mid',color='k')	#plot data
-
-	pl.fill_between(wav,flux,color='grey',interpolate=True,step='mid')	#fill grey between zero on flux axis and data
+	
+	#fill grey between zero on flux axis and data
+	pl.fill_between(wav,flux,color='grey',interpolate=True,step='mid')	
 	pl.legend(frameon=False)
 
 	# ------------------------------------------------------------

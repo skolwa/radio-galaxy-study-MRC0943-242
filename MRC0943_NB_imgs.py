@@ -51,7 +51,7 @@ lam2 		= [6430., 6412., 6450., 6090., 7485., 9146., 5258., 5533., 6536., 5841., 
 
 #radial velocity (Doppler)
 def vel(wav_obs,wav_em,z):
-	c = 2.9979245800e5					#km/s
+	c = 2.9979245800e5    #km/s
 	v = c*((wav_obs/wav_em/(1.+z)) - 1.)
 	return v
 
@@ -102,20 +102,21 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 
 	spec = cont_cube.sum(axis=(1,2))
 
-	wav 	=  spec.wave.coord()  		# Ang
-	flux 	=  spec.data				#1.e-20 erg / s / cm^2 / Ang
-	# pl.plot(wav,flux,c='k',drawstyle='steps-mid')
+	wav 	=  spec.wave.coord()    # Ang
+	flux 	=  spec.data            # 1.e-20 erg / s / cm^2 / Ang
 
 	p1,p2 			= spec.wave.pixel([lam1,lam2], nearest=True)
 
-	line_em 		= cube[p1:p2+1,10:70,20:90]		#spectral and spatial extraction for narrow-band image
+	#spectral and spatial extraction for narrow-band image
+	line_em 		= cube[p1:p2+1,10:70,20:90]		
 
 	new_fname 		= "./out/"+spec_feat+"_trunc.fits"
 	line_em.write(new_fname)
 	hdu 			= fits.open(new_fname)[1]
 	wcs 			= WCS(hdu.header).celestial
 
-	line_em_img 	= line_em.sum(axis=0) 		#collapse spectral axis to get image
+	#collapse spectral axis to get image
+	line_em_img 	= line_em.sum(axis=0) 		
 
 	ax = pl.gca()
 
@@ -174,20 +175,20 @@ for spec_feat,lam1,lam2 in zip(spec_feat,lam1,lam2):
 	for i in range(1,number_contours):
 		contours[i] = start_level*(np.sqrt(2))*odd_number
 		odd_number	+= 2
-å
+
 	vla_arr = vla.data[0,0,:,:]
 	
 	#save VLA .ICLN file in .fits format
 	fits.writeto(home+'/DATA/VLA_DATA/0943C.fits',vla_arr,clobber=True)
 
 	#5arcsec -> kpc conversion
-	dl 	  = ac.Planck15.luminosity_distance(2.923)	#Mpc
-	z     = 2.923
-	D     = 40.		#kpc
+	dl   = ac.Planck15.luminosity_distance(2.923)    #Mpc
+	z    = 2.923
+	D    = 40.    #kpc
 
-	theta = D*(1.+z)**2/(dl.value*1000.)  #radians
-	theta_arc = theta*206265.		#arcsec
-å
+	theta = D*(1.+z)**2/(dl.value*1000.)    #radians
+	theta_arc = theta*206265.    #arcsec
+
 	#----------------------------------------------------------------
 	#  OVERLAY VLA contours on Gaussian-smoothed narrow band images
 	#----------------------------------------------------------------

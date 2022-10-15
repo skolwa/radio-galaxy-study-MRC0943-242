@@ -43,13 +43,13 @@ for spec_feat,lam1,lam2,mask1,mask2 in zip(spec_feat,lam1,lam2,mask1,mask2):
 	# LOAD data cubes
 	#----------------
 	#import astrometry corrected, sky subtracted cube
-	fname		= home+"/DATA/MUSE_data/MRC0943-242/MRC0943_ZAP_astrocorr.fits"
-	cube		= mpdo.Cube(fname,mmap=True)
+	fname = home+"/DATA/MUSE_data/MRC0943-242/MRC0943_ZAP_astrocorr.fits"
+	cube = mpdo.Cube(fname,mmap=True)
 	
 	#radio galaxy and CGM subcube
 	rg = cube[:,190:200,120:130]
 
-	fname 	= home+"/DATA/MUSE_data/MRC0943-242/MRC0943_glx_cont.fits"
+	fname = home+"/DATA/MUSE_data/MRC0943-242/MRC0943_glx_cont.fits"
 
 	#------------------------------------
 	#  CONTINUUM-SUBTRACT LINE EMISSION 

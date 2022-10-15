@@ -3,7 +3,7 @@
 # MRC0943_astro_correct.py
 
 # Purpose: 
-# 	-Astrometry-correct using GAIA DR2
+# -Astrometry-correct using GAIA DR2
 
 import numpy as np
 from math import*
@@ -21,7 +21,7 @@ n = len(GAIA_std_stars)
 gaia_ra 	= [ GAIA_std_stars[i][0] for i in range(n) ]
 gaia_dec 	= [ GAIA_std_stars[i][1] for i in range(n) ]
 
-#manually approximate the co-ordinates (in degrees) of standard stars (detect. in DR2)
+#manually approximate the co-ordinates (in degrees) of standard stars (detected in DR2)
 MUSE_std_stars = \
 [ (146.38085, -24.484034), 
   (146.38478, -24.489314),
